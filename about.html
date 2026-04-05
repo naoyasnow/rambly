@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rambly について</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Shippori+Mincho:wght@300;400;600&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky: #cdeaf7;
+  --sky-deep: #b4dcf0;
+  --sand: #f5e49a;
+  --sand-deep: #efd87a;
+  --text: #1e2e22;
+  --text-mid: #3d5242;
+  --text-light: #7a9280;
+  --green: #6aaa7a;
+  --green-dark: #4e8a5e;
+  --cork: #c4955a;
+  --brown: #7a5230;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Noto Sans JP', sans-serif;
+  font-weight:300;
+  color:var(--text);
+  overflow-x:hidden;
+  background:var(--sky);
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:20px 36px;
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(205,234,247,.88);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.4);
+}
+.nav-logo {
+  font-family:'Cormorant Garamond', serif;
+  font-size:22px; font-weight:300; letter-spacing:5px;
+  color:var(--text); text-decoration:none;
+}
+.nav-right { display:flex; gap:20px; align-items:center; }
+.nav-link {
+  font-family:'Shippori Mincho', serif;
+  font-size:12px; letter-spacing:2px; color:var(--text-mid);
+  background:none; border:none; cursor:pointer; text-decoration:none;
+  transition:color .2s;
+}
+.nav-link:hover { color:var(--text); }
+.nav-cta {
+  background:var(--text); color:#f5f0e2;
+  border:none; padding:8px 22px;
+  font-family:'Shippori Mincho', serif;
+  font-size:11px; letter-spacing:2px;
+  cursor:pointer; border-radius:2px; transition:background .25s;
+}
+.nav-cta:hover { background:var(--green); }
+
+/* ── WAVE ── */
+.wave-sep { display:block; width:100%; line-height:0; margin-top:-2px; pointer-events:none; }
+.wave-sep svg { display:block; width:100%; }
+
+/* ── 共通 ── */
+.container { max-width:680px; margin:0 auto; padding:0 28px; }
+.eyebrow {
+  display:block; font-size:10px; letter-spacing:5px;
+  color:var(--text-light); margin-bottom:18px; text-align:center;
+}
+.sec-title {
+  font-family:'Shippori Mincho', serif;
+  font-size:clamp(20px,3.5vw,26px); font-weight:600;
+  color:var(--text); line-height:1.8; letter-spacing:1px;
+  text-align:center; margin-bottom:24px;
+}
+.sec-body {
+  font-size:14px; color:var(--text-mid);
+  line-height:2.4; letter-spacing:.4px; text-align:center;
+}
+
+/* ── PAGE HERO ── */
+#page-hero {
+  background:linear-gradient(170deg, #b8daf0 0%, var(--sky) 60%);
+  padding:140px 28px 80px;
+  text-align:center;
+}
+.page-hero-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(13px,2vw,15px); font-weight:300;
+  letter-spacing:6px; color:var(--text-light);
+  margin-bottom:20px;
+}
+.page-hero-copy {
+  font-family:'Shippori Mincho', serif;
+  font-size:clamp(22px,4vw,32px); font-weight:400;
+  color:var(--text); line-height:1.8; letter-spacing:2px;
+  margin-bottom:20px;
+}
+.page-hero-sub {
+  font-family:'Shippori Mincho', serif;
+  font-size:14px; font-weight:300;
+  color:var(--text-mid); line-height:2.2; letter-spacing:.8px;
+}
+
+/* ── 特長 ── */
+.features { display:grid; gap:16px; margin-top:40px; }
+.feature {
+  display:flex; gap:18px; align-items:flex-start;
+  background:rgba(255,255,255,.42); border:1px solid rgba(255,255,255,.7);
+  border-radius:10px; padding:22px 24px;
+  backdrop-filter:blur(4px);
+}
+.feature-num {
+  font-family:'Cormorant Garamond', serif;
+  font-size:32px; font-weight:300; color:rgba(30,46,34,.15);
+  line-height:1; flex-shrink:0; width:32px; text-align:center;
+  margin-top:2px;
+}
+.feature-body { flex:1; }
+.feature-title {
+  font-family:'Shippori Mincho', serif;
+  font-size:13px; font-weight:600; color:var(--text);
+  margin-bottom:6px; letter-spacing:.5px;
+}
+.feature-desc { font-size:12px; color:var(--text-mid); line-height:2.1; }
+
+/* ── SECTIONS ── */
+.sec-sky  { background:var(--sky);  padding:72px 0 64px; }
+.sec-sand { background:var(--sand); padding:72px 0 64px; }
+
+/* ── HOW STEPS ── */
+.steps { display:grid; gap:16px; margin-top:40px; }
+.step {
+  display:flex; gap:20px; align-items:flex-start;
+  background:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.75);
+  border-radius:10px; padding:22px 24px;
+  backdrop-filter:blur(4px);
+  transition:transform .3s, box-shadow .3s;
+}
+.step:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(80,150,200,.14); }
+.step-icon { font-size:24px; flex-shrink:0; margin-top:2px; }
+.step-num { font-size:10px; letter-spacing:3px; color:var(--text-light); display:block; margin-bottom:4px; }
+.step-label { font-family:'Shippori Mincho', serif; font-size:15px; font-weight:600; color:var(--text); margin-bottom:5px; }
+.step-desc { font-size:13px; color:var(--text-mid); line-height:2.1; }
+
+/* ── BOTTLE TYPES ── */
+.types-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:40px; }
+.type-card { border-radius:12px; padding:28px 22px; text-align:center; transition:transform .3s; }
+.type-card:hover { transform:translateY(-3px); }
+.type-card.green { background:rgba(255,255,255,.55); border:1.5px solid rgba(106,170,122,.3); }
+.type-card.brown-c { background:rgba(122,82,48,.08); border:1.5px solid rgba(122,82,48,.25); }
+.type-title { font-family:'Shippori Mincho', serif; font-size:15px; font-weight:600; color:var(--text); margin:14px 0 8px; }
+.type-desc { font-size:12px; color:var(--text-mid); line-height:2; }
+.type-badge { display:inline-block; font-size:10px; letter-spacing:1.5px; padding:3px 10px; border-radius:2px; margin-top:10px; }
+.badge-open { background:rgba(106,170,122,.15); color:var(--green-dark); }
+.badge-sealed { background:rgba(122,82,48,.12); color:var(--brown); }
+
+.rule-box {
+  margin-top:20px;
+  background:rgba(255,255,255,.45); border-radius:10px;
+  padding:20px 24px; border:1px solid rgba(255,255,255,.7);
+}
+.rule-box-title { font-family:'Shippori Mincho', serif; font-size:13px; font-weight:600; color:var(--text); margin-bottom:8px; }
+.rule-box-body { font-size:12px; color:var(--text-mid); line-height:2.1; }
+
+/* ── JOURNEY ── */
+.journey { display:flex; flex-direction:column; margin-top:40px; }
+.jstep { display:flex; gap:18px; align-items:flex-start; padding:14px 0; position:relative; }
+.jstep:not(:last-child)::after {
+  content:''; position:absolute; left:17px; top:42px;
+  width:1px; height:calc(100% - 10px);
+  background:linear-gradient(180deg,rgba(30,46,34,.15),rgba(30,46,34,.03));
+}
+.j-dot {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; flex-shrink:0;
+}
+.jd-sky  { background:rgba(148,200,232,.35); border:1.5px solid rgba(148,200,232,.6); }
+.jd-air  { background:rgba(106,170,122,.2);  border:1.5px solid rgba(106,170,122,.4); }
+.jd-deep { background:rgba(30,46,34,.1);     border:1.5px solid rgba(30,46,34,.2); }
+.j-label { font-family:'Shippori Mincho', serif; font-size:14px; font-weight:600; color:var(--text); margin-bottom:3px; }
+.j-desc  { font-size:12px; color:var(--text-mid); line-height:1.9; }
+
+/* ── BEACH MOCK ── */
+.beach-mock {
+  background:linear-gradient(180deg,#c8e8f5 0%,var(--sky) 40%,var(--sand) 100%);
+  border-radius:14px; padding:28px 24px 44px;
+  border:1px solid rgba(255,255,255,.65);
+  box-shadow:0 16px 48px rgba(0,0,0,.07);
+  position:relative; overflow:hidden; margin-top:40px;
+}
+.beach-mock::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:36px;
+  background:linear-gradient(0deg,var(--sand-deep) 0%,transparent 100%);
+}
+.beach-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+.beach-name { font-family:'Shippori Mincho', serif; font-size:14px; letter-spacing:2px; color:var(--text); }
+.beach-meta { font-size:11px; letter-spacing:2px; color:var(--text-light); }
+.bottles-row { display:flex; gap:22px; flex-wrap:wrap; position:relative; z-index:1; }
+.btl { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; transition:transform .3s; }
+.btl:hover { transform:translateY(-7px); }
+.btl-label { font-size:10px; letter-spacing:2px; color:var(--text-light); }
+.btl-preview { font-size:10px; color:var(--text-mid); max-width:56px; text-align:center; line-height:1.5; }
+.action-bar {
+  background:rgba(255,255,255,.6); backdrop-filter:blur(6px);
+  border-radius:8px; padding:16px 20px; margin-top:20px;
+  border:1px solid rgba(255,255,255,.7); position:relative; z-index:1;
+}
+.ab-title { font-family:'Shippori Mincho', serif; font-size:12px; color:var(--text); letter-spacing:1px; margin-bottom:10px; }
+.ab-btns { display:flex; gap:10px; flex-wrap:wrap; }
+.ab-btn { padding:8px 16px; border-radius:2px; font-family:'Shippori Mincho', serif; font-size:11px; letter-spacing:1.5px; cursor:pointer; border:none; transition:all .25s; }
+.ab-air { background:var(--text); color:#f5f0e2; }
+.ab-air:hover { background:var(--green); }
+.ab-fwd { background:transparent; color:var(--text); border:1.5px solid rgba(30,46,34,.28); }
+.ab-place { background:transparent; color:var(--text-light); border:1.5px solid rgba(30,46,34,.14); font-size:10px; }
+.ab-note { font-size:10px; color:var(--text-light); letter-spacing:.5px; margin-top:8px; }
+
+/* ── WRITE MOCK（羊皮紙） ── */
+.write-mock {
+  position:relative; margin-top:40px;
+}
+
+/* ボトルタップセレクター */
+.bottle-selector {
+  margin-bottom:24px; text-align:center;
+}
+.bottle-tap-hint {
+  font-family:'Shippori Mincho', serif;
+  font-size:11px; letter-spacing:3px; color:var(--text-light);
+  margin-bottom:18px;
+}
+.bottle-choices {
+  display:flex; gap:32px; justify-content:center; align-items:flex-end;
+}
+.bottle-choice {
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  cursor:pointer; transition:transform .3s, opacity .3s;
+  opacity:.4;
+  padding:12px 16px;
+  border-radius:10px;
+  border:2px solid transparent;
+}
+.bottle-choice.active {
+  opacity:1;
+  border-color:rgba(30,46,34,.12);
+  background:rgba(255,255,255,.35);
+}
+.bottle-choice:hover { transform:translateY(-4px); opacity:.75; }
+.bottle-choice.active:hover { transform:translateY(-4px); opacity:1; }
+.bottle-choice svg { filter:drop-shadow(0 4px 8px rgba(0,0,0,.12)); transition:filter .3s; }
+.bottle-choice.active svg { filter:drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
+.bottle-choice-label {
+  font-family:'Shippori Mincho', serif;
+  font-size:12px; font-weight:600; color:var(--text); letter-spacing:1px;
+}
+.bottle-choice-desc {
+  font-size:10px; color:var(--text-light); letter-spacing:.5px;
+  line-height:1.7; text-align:center;
+}
+
+/* 羊皮紙本体 */
+.parchment {
+  background:
+    linear-gradient(135deg, #f5ead0 0%, #ede0b8 30%, #f0e6c8 60%, #e8d8a8 100%);
+  border-radius:3px;
+  padding:28px 44px 24px;
+  box-shadow:
+    0 2px 0 #c8b890,
+    0 4px 0 #b8a880,
+    2px 6px 16px rgba(80,60,20,.18),
+    inset 0 0 40px rgba(180,140,60,.08);
+  position:relative;
+  border:1px solid #c8b478;
+}
+.parchment::before {
+  content:'';
+  position:absolute; inset:0; border-radius:3px;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(160,120,40,.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(140,100,30,.1) 0%, transparent 40%);
+  pointer-events:none;
+}
+.parchment-lines {
+  position:absolute; inset:28px 44px;
+  background-image:repeating-linear-gradient(
+    transparent, transparent 31px,
+    rgba(160,130,70,.2) 31px, rgba(160,130,70,.2) 32px
+  );
+  background-position:0 8px;
+  pointer-events:none;
+}
+.parchment-date {
+  font-family:'Cormorant Garamond', serif;
+  font-size:12px; font-style:italic; color:#a09060;
+  text-align:right; margin-bottom:8px; position:relative; z-index:1;
+}
+.parchment-textarea {
+  width:100%; min-height:160px; background:transparent;
+  border:none; outline:none; resize:none;
+  font-family:'Shippori Mincho', serif; font-size:16px;
+  color:#2e2010; line-height:2; letter-spacing:.5px;
+  position:relative; z-index:1;
+  text-shadow:0 1px 0 rgba(255,250,230,.6);
+}
+.parchment-textarea::placeholder { color:rgba(100,80,30,.3); }
+.parchment-char-row {
+  display:flex; justify-content:flex-end; align-items:center;
+  margin-top:12px; border-top:1px solid rgba(160,130,70,.2); padding-top:10px;
+  position:relative; z-index:1;
+}
+.parchment-char {
+  font-family:'Cormorant Garamond', serif;
+  font-size:12px; color:#a09060; font-style:italic;
+}
+
+/* ボタン */
+.parchment-action {
+  display:flex; justify-content:flex-end; margin-top:16px;
+}
+.btn-seal {
+  background:linear-gradient(135deg, #c4803a 0%, #a86828 100%);
+  color:#f5ead0; border:none; padding:11px 30px;
+  font-family:'Shippori Mincho', serif;
+  font-size:13px; letter-spacing:3px;
+  cursor:pointer; border-radius:2px;
+  box-shadow:0 2px 8px rgba(120,70,20,.25);
+  transition:all .3s;
+}
+.btn-seal:hover {
+  background:linear-gradient(135deg, #d49040 0%, #b87830 100%);
+  transform:translateY(-2px);
+  box-shadow:0 4px 14px rgba(120,70,20,.3);
+}
+
+/* ── STATUS MOCK ── */
+.status-list { display:flex; flex-direction:column; gap:12px; margin-top:40px; }
+.status-item {
+  background:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.72);
+  border-radius:10px; padding:18px 22px;
+  display:flex; align-items:center; gap:16px;
+  backdrop-filter:blur(4px);
+}
+.si-icon { font-size:20px; flex-shrink:0; }
+.si-body { flex:1; }
+.si-excerpt { font-family:'Shippori Mincho', serif; font-size:13px; color:var(--text); margin-bottom:3px; }
+.si-meta { font-size:11px; color:var(--text-light); letter-spacing:.5px; }
+.si-badge { font-size:10px; letter-spacing:1.5px; padding:3px 10px; border-radius:2px; flex-shrink:0; }
+.b-journey { background:rgba(148,200,232,.3); color:#2a6080; }
+.b-aired { background:rgba(106,170,122,.2); color:var(--green-dark); }
+.b-deep { background:rgba(30,46,34,.08); color:var(--text-light); }
+
+/* ── CTA ── */
+#cta { background:linear-gradient(180deg,var(--sand) 0%,var(--sand-deep) 100%); padding:80px 28px 100px; text-align:center; }
+.cta-title { font-family:'Cormorant Garamond', serif; font-size:clamp(28px,5vw,44px); font-weight:300; color:var(--text); letter-spacing:5px; line-height:1.45; margin-bottom:16px; }
+.cta-sub { font-family:'Shippori Mincho', serif; font-size:13px; color:var(--text-mid); letter-spacing:1px; line-height:2.3; margin-bottom:44px; }
+.cta-btns { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.btn-primary { background:var(--text); color:#f5f0e2; border:none; padding:14px 44px; font-family:'Shippori Mincho', serif; font-size:13px; letter-spacing:3px; cursor:pointer; border-radius:2px; transition:all .3s; }
+.btn-primary:hover { background:var(--green); transform:translateY(-2px); box-shadow:0 8px 24px rgba(106,170,122,.3); }
+.btn-ghost { background:transparent; color:var(--text); border:1.5px solid rgba(30,46,34,.3); padding:13px 44px; font-family:'Shippori Mincho', serif; font-size:13px; letter-spacing:3px; cursor:pointer; border-radius:2px; transition:all .3s; }
+.btn-ghost:hover { border-color:var(--text); background:rgba(30,46,34,.05); transform:translateY(-2px); }
+
+/* ── FOOTER ── */
+footer { background:var(--text); color:rgba(245,240,224,.35); text-align:center; padding:28px; font-size:10px; letter-spacing:3px; }
+
+/* ── アニメーション ── */
+.fade-up { opacity:0; transform:translateY(20px); transition:opacity .7s ease, transform .7s ease; }
+.fade-up.visible { opacity:1; transform:translateY(0); }
+
+/* ── 市場モック ── */
+.market-mock { display:flex; flex-direction:column; gap:14px; margin-top:0; }
+.market-item {
+  background:rgba(255,255,255,.52); border:1px solid rgba(255,255,255,.75);
+  border-radius:10px; padding:20px 24px;
+  backdrop-filter:blur(4px);
+  transition:transform .3s, box-shadow .3s;
+}
+.market-item:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(80,150,200,.12); }
+.market-meta { font-size:10px; letter-spacing:2px; color:var(--text-light); margin-bottom:8px; }
+.market-body {
+  font-family:'Shippori Mincho', serif;
+  font-size:15px; color:var(--text); line-height:1.8; letter-spacing:.5px;
+  margin-bottom:12px;
+}
+.market-footer { display:flex; justify-content:space-between; align-items:center; }
+.market-tag {
+  font-size:10px; letter-spacing:1.5px; padding:3px 10px; border-radius:2px;
+  background:rgba(106,170,122,.15); color:var(--green-dark);
+}
+.market-tag-air { background:rgba(100,160,220,.15); color:#2a6080; }
+.market-tag-fwd { background:rgba(196,149,90,.15); color:#7a5020; }
+.market-date { font-size:10px; color:var(--text-light); letter-spacing:1px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">rambly</a>
+  <div class="nav-right">
+    <button class="nav-link">砂浜に行く</button>
+    <button class="nav-cta">島を作る</button>
+  </div>
+</nav>
+
+<!-- ── PAGE HERO ── -->
+<section id="page-hero">
+  <p class="page-hero-title">ABOUT RAMBLY</p>
+  <h1 class="page-hero-copy">
+    ramblyは、<br>
+    誰とも繋がることができない<br>
+    スローSNSです。
+  </h1>
+  <p class="page-hero-sub">
+    「誰かに聞いてほしいけど、誰にも覚えていてもらわなくていい」<br>
+    そんな日々の言葉を、ボトルメールにしたためて、<br>
+    ramblyの海に放流することができます。
+  </p>
+</section>
+
+<!-- wave hero→features（sky→sand） -->
+<div class="wave-sep" style="background:var(--sky)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#f5e49a" fill-opacity="1"
+      d="M0,32L34.3,53.3C68.6,75,137,117,206,138.7C274.3,160,343,160,411,149.3C480,139,549,117,617,112C685.7,107,754,117,823,128C891.4,139,960,149,1029,154.7C1097.1,160,1166,160,1234,154.7C1302.9,149,1371,139,1406,133.3L1440,128L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── FEATURES ── -->
+<section class="sec-sand">
+  <div class="container fade-up">
+    <span class="eyebrow">FEATURES</span>
+    <h2 class="sec-title">ramblyだけの3つのこと</h2>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-num">1</div>
+        <div class="feature-body">
+          <div class="feature-title">宛先も差出人も、ない</div>
+          <div class="feature-desc">ボトルメールには「宛先」も「差出人」も書けません。誰かが読むかもしれないし、誰も読まないかもしれません。</div>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">2</div>
+        <div class="feature-body">
+          <div class="feature-title">ゆっくり、届く</div>
+          <div class="feature-desc">ボトルメールは数時間〜数日をかけてゆっくり次の人へ届きます。ほんものの手紙のように。</div>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">3</div>
+        <div class="feature-body">
+          <div class="feature-title">旅の記録は、最後までわからない</div>
+          <div class="feature-desc">最後の1人が「返信（エアメール）」をしない限り、差出人は自分のボトルメールの旅の履歴を知ることなく、流した言葉は、みんなが書き足した言葉と一緒に、ボトルごと深海に眠ります。でも、ramblyの海は、きっとあなたの言葉を忘れません。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave features→how（sand→sky） -->
+<div class="wave-sep" style="background:var(--sand)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#cdeaf7" fill-opacity="1"
+      d="M0,0L34.3,32C68.6,64,137,128,206,160C274.3,192,343,192,411,181.3C480,171,549,149,617,133.3C685.7,117,754,107,823,101.3C891.4,96,960,96,1029,117.3C1097.1,139,1166,181,1234,181.3C1302.9,181,1371,139,1406,117.3L1440,96L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── HOW ── -->
+<section class="sec-sky">
+  <div class="container fade-up">
+    <span class="eyebrow">HOW IT WORKS</span>
+    <h2 class="sec-title">使い方</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">🏝️</div>
+        <div>
+          <span class="step-num">STEP 01</span>
+          <div class="step-label">島を作る</div>
+          <p class="step-desc">メールアドレスで登録するだけ。あなただけの砂浜が生まれます。名前も顔も、必要ありません。ログイン不要のゲストとしてボトルを流すこともできます。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🍾</div>
+        <div>
+          <span class="step-num">STEP 02</span>
+          <div class="step-label">ボトルメールを流す</div>
+          <p class="step-desc">今感じていることを書いて、海に流します。宛先はありません。いつか、誰かの砂浜に届きます。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🌊</div>
+        <div>
+          <span class="step-num">STEP 03</span>
+          <div class="step-label">誰かのボトルが届く</div>
+          <p class="step-desc">ある日、砂浜にコルクの詰まったボトルが打ち上げられています。誰が書いたかはわかりません。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">✉️</div>
+        <div>
+          <span class="step-num">STEP 04</span>
+          <div class="step-label">エアメール・寄せて返す・そっと置く</div>
+          <p class="step-desc">短く返すことができます（エアメール）。言葉を書き足してまた流すこともできます（寄せて返す）。そっと砂浜に置いたままでも。ただし、そのうち次の島に勝手に流れていきますけれど。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave sand→sky -->
+<div class="wave-sep" style="background:var(--sky)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#f5e49a" fill-opacity="1"
+      d="M0,32L34.3,48C68.6,64,137,96,206,128C274.3,160,343,192,411,192C480,192,549,160,617,144C685.7,128,754,128,823,117.3C891.4,107,960,96,1029,112C1097.1,128,1166,170,1234,176C1302.9,181,1371,149,1406,133.3L1440,117.3L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── BOTTLE TYPES ── -->
+<section class="sec-sand">
+  <div class="container fade-up">
+    <span class="eyebrow">BOTTLE TYPES</span>
+    <h2 class="sec-title">2種類のボトル</h2>
+    <div class="types-grid">
+
+      <div class="type-card green">
+        <svg width="50" height="84" viewBox="0 0 50 84" fill="none">
+          <rect x="18" y="2" width="14" height="10" rx="2.5" fill="#c4955a"/>
+          <rect x="16" y="11" width="18" height="4" rx="2" fill="#b8824a"/>
+          <path d="M18 15 Q15 21 14 27 L36 27 Q35 21 32 15 Z" fill="#7abf8a" opacity=".9"/>
+          <path d="M10 27 Q8 36 8 47 Q8 68 13 74 Q17 78 25 78 Q33 78 37 74 Q42 68 42 47 Q42 36 40 27 Z" fill="#7abf8a" opacity=".9"/>
+          <path d="M13 32 Q12 42 12 54" stroke="rgba(255,255,255,.4)" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="16" y="42" width="18" height="14" rx="1.5" fill="rgba(255,255,210,.4)" transform="rotate(-3 25 49)"/>
+        </svg>
+        <div class="type-title">クリアボトル</div>
+        <div class="type-desc">冒頭の12文字が透けて見える。受け取った人が公開できる。</div>
+        <div class="type-badge badge-open">公開可能</div>
+      </div>
+
+      <div class="type-card brown-c">
+        <svg width="50" height="84" viewBox="0 0 50 84" fill="none">
+          <rect x="18" y="2" width="14" height="10" rx="2.5" fill="#8a6040"/>
+          <rect x="16" y="11" width="18" height="4" rx="2" fill="#7a5030"/>
+          <path d="M18 15 Q15 21 14 27 L36 27 Q35 21 32 15 Z" fill="#7a5230" opacity=".93"/>
+          <path d="M10 27 Q8 36 8 47 Q8 68 13 74 Q17 78 25 78 Q33 78 37 74 Q42 68 42 47 Q42 36 40 27 Z" fill="#7a5230" opacity=".93"/>
+          <path d="M13 32 Q12 42 12 54" stroke="rgba(255,220,180,.15)" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <div class="type-title">ブラウンボトル</div>
+        <div class="type-desc">中身は完全に見えない。開けるまで何もわからない。</div>
+        <div class="type-badge badge-sealed">公開不可</div>
+      </div>
+
+    </div>
+
+    <div class="rule-box">
+      <div class="rule-box-title">寄せて返すルール</div>
+      <div class="rule-box-body">読んだボトルに自分の言葉を書き足して、また流せます（寄せて返す）。ただし追記後の合計文字数は原文以下であること。言葉は旅しながら、凝縮されていく。</div>
+    </div>
+  </div>
+</section>
+
+<!-- wave sky→sand -->
+<div class="wave-sep" style="background:var(--sand)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#cdeaf7" fill-opacity="1"
+      d="M0,64L34.3,74.7C68.6,85,137,107,206,128C274.3,149,343,171,411,176C480,181,549,171,617,149.3C685.7,128,754,96,823,96C891.4,96,960,128,1029,144C1097.1,160,1166,160,1234,154.7C1302.9,149,1371,139,1406,133.3L1440,128L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── JOURNEY ── -->
+<section class="sec-sky">
+  <div class="container fade-up">
+    <span class="eyebrow">JOURNEY</span>
+    <h2 class="sec-title">ボトルの旅</h2>
+    <p class="sec-body">流したボトルの行方は、基本的にわかりません。<br>エアメールが届いたとき、初めて旅の記録が見えます。</p>
+    <div class="journey">
+      <div class="jstep"><div class="j-dot jd-sky">🍾</div><div><div class="j-label">流した</div><div class="j-desc">海に消えていきます。所在は不明。24時間以内に誰かに届きます。</div></div></div>
+      <div class="jstep"><div class="j-dot jd-sky">🌊</div><div><div class="j-label">旅しています</div><div class="j-desc">誰かの砂浜に届き、読まれたり転送されたりしています。送った側には何も見えません。</div></div></div>
+      <div class="jstep"><div class="j-dot jd-air">✉️</div><div><div class="j-label">エアメールが届いた</div><div class="j-desc">旅の終わり。寄せられた言葉とともに「〇つの島を渡りました」という記録が見られます。エアメールが送られると、ボトルの旅は終了です。</div></div></div>
+      <div class="jstep"><div class="j-dot jd-deep">🌑</div><div><div class="j-label">深海に沈んだ</div><div class="j-desc">7つの島を渡っても誰もエアメールを送らなかった場合、ボトルは深海へ沈みます。「あなたの言葉は深海に眠りました」とだけ届きます。</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- wave sand→sky -->
+<div class="wave-sep" style="background:var(--sky)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#f5e49a" fill-opacity="1"
+      d="M0,32L34.3,53.3C68.6,75,137,117,206,138.7C274.3,160,343,160,411,149.3C480,139,549,117,617,112C685.7,107,754,117,823,128C891.4,139,960,149,1029,154.7C1097.1,160,1166,160,1234,154.7C1302.9,149,1371,139,1406,133.3L1440,128L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── BEACH MOCK ── -->
+<section class="sec-sand">
+  <div class="container fade-up">
+    <span class="eyebrow">YOUR BEACH</span>
+    <h2 class="sec-title">砂浜のイメージ</h2>
+    <div class="beach-mock">
+      <div class="beach-header">
+        <span class="beach-name">わたしの砂浜</span>
+        <span class="beach-meta">3通 届いています</span>
+      </div>
+      <div class="bottles-row">
+
+        <div class="btl">
+          <svg width="42" height="72" viewBox="0 0 42 72" fill="none">
+            <rect x="15" y="2" width="12" height="8" rx="2" fill="#c4955a"/><rect x="13" y="9" width="16" height="3" rx="1.5" fill="#b8824a"/>
+            <path d="M15 12 Q12 17 11 22 L31 22 Q30 17 27 12 Z" fill="#7abf8a" opacity=".92"/>
+            <path d="M9 22 Q7 30 7 40 Q7 60 11 65 Q15 69 21 69 Q27 69 31 65 Q35 60 35 40 Q35 30 33 22 Z" fill="#7abf8a" opacity=".92"/>
+            <path d="M11 26 Q10 34 10 44" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="btl-label">未開封</span>
+          <span class="btl-preview">「最近ずっと…」</span>
+        </div>
+
+        <div class="btl">
+          <svg width="42" height="72" viewBox="0 0 42 72" fill="none">
+            <rect x="15" y="2" width="12" height="8" rx="2" fill="#8a6040"/><rect x="13" y="9" width="16" height="3" rx="1.5" fill="#7a5030"/>
+            <path d="M15 12 Q12 17 11 22 L31 22 Q30 17 27 12 Z" fill="#7a5230" opacity=".93"/>
+            <path d="M9 22 Q7 30 7 40 Q7 60 11 65 Q15 69 21 69 Q27 69 31 65 Q35 60 35 40 Q35 30 33 22 Z" fill="#7a5230" opacity=".93"/>
+          </svg>
+          <span class="btl-label">未開封</span>
+          <span class="btl-preview" style="color:rgba(30,46,34,.2)">???</span>
+        </div>
+
+        <div class="btl" style="opacity:.6">
+          <svg width="42" height="72" viewBox="0 0 42 72" fill="none">
+            <path d="M15 4 Q12 17 11 22 L31 22 Q30 17 27 4 Z" fill="#7abf8a" opacity=".6"/>
+            <path d="M9 22 Q7 30 7 40 Q7 60 11 65 Q15 69 21 69 Q27 69 31 65 Q35 60 35 40 Q35 30 33 22 Z" fill="#7abf8a" opacity=".6"/>
+            <rect x="13" y="34" width="16" height="12" rx="1.5" fill="rgba(255,255,220,.7)" transform="rotate(-3 21 40)"/>
+          </svg>
+          <span class="btl-label">開封済み</span>
+          <span class="btl-preview">読んだ</span>
+        </div>
+
+      </div>
+      <div class="action-bar">
+        <div class="ab-title">ボトルを開けたら…</div>
+        <div class="ab-btns">
+          <button class="ab-btn ab-air">✉️ エアメールを送る</button>
+          <button class="ab-btn ab-fwd">🍾 寄せて返す</button>
+          <button class="ab-btn ab-place">そっと置く</button>
+        </div>
+        <div class="ab-note">24時間以内にアクションがなければ、自動的に次の島へ流れます</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave sky→sand -->
+<div class="wave-sep" style="background:var(--sand)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#cdeaf7" fill-opacity="1"
+      d="M0,64L34.3,64C68.6,64,137,64,206,80C274.3,96,343,128,411,149.3C480,171,549,181,617,170.7C685.7,160,754,128,823,117.3C891.4,107,960,117,1029,133.3C1097.1,149,1166,171,1234,176C1302.9,181,1371,171,1406,165.3L1440,160L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── WRITE MOCK ── -->
+<section class="sec-sky">
+  <div class="container fade-up">
+    <span class="eyebrow">WRITE</span>
+    <h2 class="sec-title">ボトルメールを書く</h2>
+    <div class="write-mock">
+
+      <!-- ボトルタップで種類切り替え -->
+      <div class="bottle-selector">
+        <div class="bottle-tap-hint">ボトルをタップして種類を選ぶ</div>
+        <div class="bottle-choices">
+
+          <div class="bottle-choice active" id="choice-green" onclick="swB('green')">
+            <svg width="54" height="92" viewBox="0 0 54 92" fill="none">
+              <rect x="20" y="2" width="14" height="10" rx="2.5" fill="#c4955a"/>
+              <rect x="18" y="11" width="18" height="4" rx="2" fill="#b8824a"/>
+              <path d="M20 15 Q17 21 16 27 L38 27 Q37 21 34 15 Z" fill="#7abf8a" opacity=".92"/>
+              <path d="M12 27 Q10 36 10 47 Q10 70 15 76 Q19 80 27 80 Q35 80 39 76 Q44 70 44 47 Q44 36 42 27 Z" fill="#7abf8a" opacity=".92"/>
+              <path d="M15 32 Q14 42 14 54" stroke="rgba(255,255,255,.42)" stroke-width="2.5" stroke-linecap="round"/>
+              <rect x="18" y="44" width="18" height="14" rx="1.5" fill="rgba(255,255,210,.38)" transform="rotate(-3 27 51)"/>
+              <line x1="21" y1="50" x2="33" y2="48.5" stroke="rgba(255,255,200,.5)" stroke-width="1"/>
+              <line x1="21" y1="54" x2="33" y2="52.5" stroke="rgba(255,255,200,.5)" stroke-width="1"/>
+            </svg>
+            <div class="bottle-choice-label">クリアボトル</div>
+            <div class="bottle-choice-desc">冒頭12文字が見える<br>公開できる</div>
+          </div>
+
+          <div class="bottle-choice" id="choice-brown" onclick="swB('brown')">
+            <svg width="54" height="92" viewBox="0 0 54 92" fill="none">
+              <rect x="20" y="2" width="14" height="10" rx="2.5" fill="#8a6040"/>
+              <rect x="18" y="11" width="18" height="4" rx="2" fill="#7a5030"/>
+              <path d="M20 15 Q17 21 16 27 L38 27 Q37 21 34 15 Z" fill="#7a5230" opacity=".93"/>
+              <path d="M12 27 Q10 36 10 47 Q10 70 15 76 Q19 80 27 80 Q35 80 39 76 Q44 70 44 47 Q44 36 42 27 Z" fill="#7a5230" opacity=".93"/>
+              <path d="M15 32 Q14 42 14 54" stroke="rgba(255,220,180,.15)" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div class="bottle-choice-label">ブラウンボトル</div>
+            <div class="bottle-choice-desc">中身は完全に見えない<br>公開不可</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 羊皮紙本体 -->
+      <div class="parchment" id="parchment">
+        <div class="parchment-lines"></div>
+        <div class="parchment-date" id="pdate"></div>
+        <textarea class="parchment-textarea" id="wa" maxlength="108"
+          placeholder="誰かに届いてほしい言葉を、ここに。&#10;宛先も、名前も、なくていい。"></textarea>
+        <div class="parchment-char-row">
+          <span class="parchment-char" id="wc">0 / 108</span>
+        </div>
+      </div>
+
+      <!-- ボタン -->
+      <div class="parchment-action">
+        <button class="btn-seal" id="wf">封をして、流す 🍾</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- wave sand→sky -->
+<div class="wave-sep" style="background:var(--sky)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#f5e49a" fill-opacity="1"
+      d="M0,96L34.3,112C68.6,128,137,160,206,165.3C274.3,171,343,149,411,138.7C480,128,549,128,617,117.3C685.7,107,754,85,823,85.3C891.4,85,960,107,1029,122.7C1097.1,139,1166,149,1234,154.7C1302.9,160,1371,160,1406,160L1440,160L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── STATUS MOCK ── -->
+<section class="sec-sand">
+  <div class="container fade-up">
+    <span class="eyebrow">YOUR BOTTLES</span>
+    <h2 class="sec-title">流したボトルたち</h2>
+    <div class="status-list">
+      <div class="status-item">
+        <div class="si-icon">🌊</div>
+        <div class="si-body">
+          <div class="si-excerpt">「あの夜のことを、誰かに話したかった」</div>
+          <div class="si-meta">3日前に流した</div>
+        </div>
+        <span class="si-badge b-journey">旅しています</span>
+      </div>
+      <div class="status-item">
+        <div class="si-icon">✉️</div>
+        <div class="si-body">
+          <div class="si-excerpt">「仕事をやめようと思う」</div>
+          <div class="si-meta">12日前 ・ 4つの島を渡りました</div>
+        </div>
+        <span class="si-badge b-aired">エアメールが届いた</span>
+      </div>
+      <div class="status-item" style="opacity:.62">
+        <div class="si-icon">🌑</div>
+        <div class="si-body">
+          <div class="si-excerpt" style="color:var(--text-light)">（ブラウンボトル）</div>
+          <div class="si-meta">34日前 ・ 7つの島を渡った</div>
+        </div>
+        <span class="si-badge b-deep">深海に沈みました</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave status→market（sand→sky） -->
+<div class="wave-sep" style="background:var(--sand)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#cdeaf7" fill-opacity="1"
+      d="M0,64L34.3,74.7C68.6,85,137,107,206,128C274.3,149,343,171,411,176C480,181,549,171,617,149.3C685.7,128,754,96,823,96C891.4,96,960,128,1029,144C1097.1,160,1166,160,1234,154.7C1302.9,149,1371,139,1406,133.3L1440,128L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── MARKET ── -->
+<section class="sec-sky">
+  <div class="container fade-up">
+    <span class="eyebrow">MARKET</span>
+    <h2 class="sec-title">市場</h2>
+    <p class="sec-body" style="margin-bottom:36px">
+      受け取ったボトルメールは、「市場」に引き揚げることができます。<br>
+      エアメールも、寄せて返したメールも、公開できます。<br>
+      クリアボトルのみ対象。ブラウンボトルは非公開のまま流れ続けます。
+    </p>
+    <!-- 市場モック -->
+    <div class="market-mock">
+      <div class="market-item">
+        <div class="market-meta">3つの島を渡った言葉</div>
+        <div class="market-body">「最近、空が好きになってきた気がする」</div>
+        <div class="market-footer">
+          <span class="market-tag">クリアボトル</span>
+          <span class="market-date">2日前に引き揚げ</span>
+        </div>
+      </div>
+      <div class="market-item">
+        <div class="market-meta">エアメール ・ 1つの島を渡った言葉</div>
+        <div class="market-body">「誰かの言葉を受け取った。少し、軽くなった。」</div>
+        <div class="market-footer">
+          <span class="market-tag market-tag-air">エアメール</span>
+          <span class="market-date">5日前に引き揚げ</span>
+        </div>
+      </div>
+      <div class="market-item">
+        <div class="market-meta">寄せて返した言葉 ・ 2つの島を渡った</div>
+        <div class="market-body">「誰かが書き足してくれた。言葉って不思議だ。」</div>
+        <div class="market-footer">
+          <span class="market-tag market-tag-fwd">寄せて返した</span>
+          <span class="market-date">9日前に引き揚げ</span>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text-light);letter-spacing:.5px;line-height:2;margin-top:20px;text-align:center">
+      自分が「寄せて返した」言葉が市場に公開されると、通知が届きます。
+    </p>
+  </div>
+</section>
+
+<!-- wave market→dark（sky→dark） -->
+<div class="wave-sep" style="background:var(--sky)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#1e2e22" fill-opacity="1"
+      d="M0,96L34.3,101.3C68.6,107,137,117,206,138.7C274.3,160,343,192,411,192C480,192,549,160,617,138.7C685.7,117,754,107,823,106.7C891.4,107,960,117,1029,133.3C1097.1,149,1166,171,1234,170.7C1302.9,171,1371,149,1406,138.7L1440,128L1440,200L0,200Z"/>
+  </svg>
+</div>
+<div class="wave-sep" style="background:var(--sand)">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+    <path fill="#1e2e22" fill-opacity="1"
+      d="M0,96L34.3,101.3C68.6,107,137,117,206,138.7C274.3,160,343,192,411,192C480,192,549,160,617,138.7C685.7,117,754,107,823,106.7C891.4,107,960,117,1029,133.3C1097.1,149,1166,171,1234,170.7C1302.9,171,1371,149,1406,138.7L1440,128L1440,200L0,200Z"/>
+  </svg>
+</div>
+
+<!-- ── CTA ── -->
+<section id="cta" style="background:#1e2e22;padding:80px 28px 100px;text-align:center">
+  <div class="container">
+    <h2 class="cta-title" style="color:#f5f0e2">あなたの島を<br>作りませんか</h2>
+    <p class="cta-sub" style="color:rgba(245,240,226,.6)">言葉は、流れていく。<br>いつかの誰かに届くために。</p>
+    <div class="cta-btns">
+      <button class="btn-primary">島を作る</button>
+      <button class="btn-ghost" style="color:#f5f0e2;border-color:rgba(245,240,226,.35)">砂浜に行く</button>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#162218">© 2025 rambly</footer>
+
+<script>
+// ── 日付表示 ──
+const d = new Date();
+document.getElementById('pdate').textContent =
+  `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+
+// ── ボトルタップで切り替え ──
+function swB(t) {
+  const cg = document.getElementById('choice-green');
+  const cb = document.getElementById('choice-brown');
+  const wf = document.getElementById('wf');
+
+  if (t === 'green') {
+    cg.classList.add('active');
+    cb.classList.remove('active');
+    wf.textContent = '封をして、流す 🍾';
+    wf.style.background = 'linear-gradient(135deg,#c4803a 0%,#a86828 100%)';
+  } else {
+    cb.classList.add('active');
+    cg.classList.remove('active');
+    wf.textContent = '封をして、流す 🟤';
+    wf.style.background = 'linear-gradient(135deg,#7a5230 0%,#5e3d20 100%)';
+  }
+}
+
+// ── 文字数 ──
+const wa = document.getElementById('wa'), wc = document.getElementById('wc');
+wa.addEventListener('input', () => { wc.textContent = `${wa.value.length} / 108`; });
+
+// ── スクロールフェードイン ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ボトルを流す — rambly</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Shippori+Mincho:wght@300;400;600&family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky: #cdeaf7;
+  --sky-deep: #b4dcf0;
+  --sand: #f5e49a;
+  --sand-deep: #efd87a;
+  --text: #1e2e22;
+  --text-mid: #3d5242;
+  --text-light: #7a9280;
+  --green: #6aaa7a;
+  --green-dark: #4e8a5e;
+  --cork: #c4955a;
+  --brown: #7a5230;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+body {
+  font-family:'Noto Sans JP', sans-serif;
+  font-weight:300;
+  color:var(--text);
+  overflow-x:hidden;
+  background:var(--sky);
+  min-height:100vh;
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:18px 32px;
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(205,234,247,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.4);
+}
+.nav-logo {
+  font-family:'Cormorant Garamond', serif;
+  font-size:20px; font-weight:300; letter-spacing:5px;
+  color:var(--text); text-decoration:none;
+}
+.nav-right { display:flex; gap:18px; align-items:center; }
+.nav-link {
+  font-family:'Shippori Mincho', serif;
+  font-size:11px; letter-spacing:2px; color:var(--text-mid);
+  background:none; border:none; cursor:pointer; text-decoration:none;
+  transition:color .2s;
+}
+.nav-link:hover { color:var(--text); }
+.nav-cta {
+  background:var(--text); color:#f5f0e2;
+  border:none; padding:7px 20px;
+  font-family:'Shippori Mincho', serif;
+  font-size:11px; letter-spacing:2px;
+  cursor:pointer; border-radius:2px; transition:background .25s;
+}
+.nav-cta:hover { background:var(--green); }
+
+/* ════════════════
+   STEP 1: 注意書き画面
+════════════════ */
+#step-notice {
+  min-height:100vh;
+  background:linear-gradient(170deg, #b8daf0 0%, var(--sky) 60%);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:88px 28px 60px;
+  text-align:center;
+}
+
+.notice-bottle {
+  margin-bottom:36px;
+  animation:bob 5s ease-in-out infinite;
+  filter:drop-shadow(0 10px 20px rgba(50,100,120,.15));
+}
+@keyframes bob { 0%,100%{transform:translateY(0) rotate(-2deg);} 50%{transform:translateY(-12px) rotate(2.5deg);} }
+
+.notice-eyebrow {
+  font-size:10px; letter-spacing:5px; color:var(--text-light);
+  margin-bottom:20px; display:block;
+}
+.notice-title {
+  font-family:'Shippori Mincho', serif;
+  font-size:clamp(20px,4vw,26px); font-weight:600;
+  color:var(--text); line-height:1.8; letter-spacing:1px;
+  margin-bottom:32px;
+}
+
+.notice-cards {
+  display:grid; gap:12px; max-width:480px; width:100%;
+  margin:0 auto 40px; text-align:left;
+}
+.notice-card {
+  background:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.75);
+  border-radius:10px; padding:18px 22px;
+  backdrop-filter:blur(4px);
+  display:flex; gap:14px; align-items:flex-start;
+}
+.notice-card-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.notice-card-text { font-size:13px; color:var(--text-mid); line-height:2; }
+.notice-card-text strong { color:var(--text); font-weight:600; }
+
+.notice-card.highlight {
+  background:rgba(245,228,154,.45);
+  border-color:rgba(232,202,88,.4);
+}
+
+.btn-proceed {
+  background:var(--text); color:#f5f0e2;
+  border:none; padding:14px 48px;
+  font-family:'Shippori Mincho', serif;
+  font-size:13px; letter-spacing:3px;
+  cursor:pointer; border-radius:2px;
+  transition:all .3s;
+  margin-bottom:16px;
+}
+.btn-proceed:hover {
+  background:var(--green); transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(106,170,122,.3);
+}
+.notice-login {
+  font-family:'Shippori Mincho', serif;
+  font-size:11px; letter-spacing:1.5px; color:var(--text-light);
+}
+.notice-login a {
+  color:var(--text-mid); text-decoration:none;
+  border-bottom:1px solid rgba(61,82,66,.25); padding-bottom:1px;
+  transition:all .2s;
+}
+.notice-login a:hover { color:var(--text); border-color:var(--text); }
+
+/* ════════════════
+   STEP 2: 書く画面
+════════════════ */
+#step-write {
+  display:none;
+  min-height:100vh;
+  background:var(--sand);
+  padding:88px 28px 60px;
+}
+
+.write-container {
+  max-width:560px; margin:0 auto;
+}
+
+.write-eyebrow {
+  font-size:10px; letter-spacing:5px; color:var(--text-light);
+  display:block; text-align:center; margin-bottom:20px;
+}
+.write-title {
+  font-family:'Shippori Mincho', serif;
+  font-size:clamp(18px,3.5vw,22px); font-weight:600;
+  color:var(--text); text-align:center; letter-spacing:1px;
+  margin-bottom:28px;
+}
+
+/* ボトルセレクター */
+.bottle-selector { text-align:center; margin-bottom:20px; }
+.bottle-tap-hint {
+  font-family:'Shippori Mincho', serif;
+  font-size:10px; letter-spacing:3px; color:var(--text-light); margin-bottom:14px;
+}
+.bottle-choices { display:flex; gap:28px; justify-content:center; align-items:flex-end; }
+.bottle-choice {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  cursor:pointer; transition:transform .3s, opacity .3s;
+  opacity:.35; padding:10px 14px; border-radius:8px;
+  border:2px solid transparent;
+}
+.bottle-choice.active {
+  opacity:1;
+  border-color:rgba(30,46,34,.1);
+  background:rgba(255,255,255,.3);
+}
+.bottle-choice:hover { opacity:.7; transform:translateY(-3px); }
+.bottle-choice.active:hover { opacity:1; transform:translateY(-3px); }
+.bottle-choice svg { filter:drop-shadow(0 4px 8px rgba(0,0,0,.1)); }
+.bc-label { font-family:'Shippori Mincho', serif; font-size:11px; font-weight:600; color:var(--text); letter-spacing:1px; }
+.bc-desc { font-size:10px; color:var(--text-light); letter-spacing:.3px; line-height:1.7; text-align:center; }
+
+/* 羊皮紙 */
+.parchment {
+  background:linear-gradient(135deg, #f5ead0 0%, #ede0b8 30%, #f0e6c8 60%, #e8d8a8 100%);
+  border-radius:3px;
+  padding:28px 40px 22px;
+  box-shadow:
+    0 2px 0 #c8b890, 0 4px 0 #b8a880,
+    2px 6px 20px rgba(80,60,20,.18),
+    inset 0 0 40px rgba(180,140,60,.08);
+  position:relative; border:1px solid #c8b478;
+}
+.parchment::before {
+  content:''; position:absolute; inset:0; border-radius:3px;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(160,120,40,.1) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(140,100,30,.08) 0%, transparent 40%);
+  pointer-events:none;
+}
+.parchment-lines {
+  position:absolute; inset:28px 40px;
+  background-image:repeating-linear-gradient(
+    transparent, transparent 31px,
+    rgba(160,130,70,.18) 31px, rgba(160,130,70,.18) 32px
+  );
+  background-position:0 8px; pointer-events:none;
+}
+.parchment-date {
+  font-family:'Cormorant Garamond', serif;
+  font-size:12px; font-style:italic; color:#a09060;
+  text-align:right; margin-bottom:8px; position:relative; z-index:1;
+}
+.parchment-textarea {
+  width:100%; min-height:180px; background:transparent;
+  border:none; outline:none; resize:none;
+  font-family:'Shippori Mincho', serif; font-size:16px;
+  color:#2e2010; line-height:2; letter-spacing:.5px;
+  position:relative; z-index:1;
+}
+.parchment-textarea::placeholder { color:rgba(100,80,30,.28); }
+.parchment-char-row {
+  display:flex; justify-content:flex-end;
+  margin-top:10px; border-top:1px solid rgba(160,130,70,.18); padding-top:8px;
+  position:relative; z-index:1;
+}
+.parchment-char {
+  font-family:'Cormorant Garamond', serif;
+  font-size:12px; color:#a09060; font-style:italic;
+}
+
+.send-action { margin-top:20px; }
+.btn-send {
+  background:var(--text); color:#f5f0e2;
+  border:none; padding:14px 32px; width:100%;
+  font-family:'Shippori Mincho', serif;
+  font-size:13px; letter-spacing:3px;
+  cursor:pointer; border-radius:2px; transition:all .3s;
+}
+.btn-send:hover { background:var(--green); transform:translateY(-2px); box-shadow:0 8px 24px rgba(106,170,122,.3); }
+.btn-send.brown-mode { background:var(--brown); }
+.btn-send.brown-mode:hover { background:#5e3d20; }
+.send-note {
+  text-align:center; margin-top:12px;
+  font-size:11px; color:var(--text-light); letter-spacing:.5px; line-height:1.9;
+}
+
+/* ════════════════
+   STEP 3: 完了アニメーション
+════════════════ */
+#step-done {
+  display:none;
+  min-height:100vh;
+  background:linear-gradient(170deg, #b8daf0 0%, var(--sky) 60%);
+  align-items:center; justify-content:center;
+  flex-direction:column; text-align:center;
+  padding:88px 28px 60px;
+}
+
+/* 海のアニメーション */
+.sea-stage {
+  position:relative; width:280px; height:180px;
+  margin:0 auto 48px;
+}
+
+/* 波 */
+.sea-wave {
+  position:absolute; bottom:0; left:0; right:0;
+  height:60px; overflow:hidden;
+}
+.sea-wave svg { width:200%; animation:wave-scroll 3s linear infinite; }
+@keyframes wave-scroll { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+/* ボトルが海に消える */
+.done-bottle {
+  position:absolute;
+  left:50%; bottom:30px;
+  transform:translateX(-50%);
+  animation:sink 2.8s ease-in 0.4s forwards;
+  filter:drop-shadow(0 6px 12px rgba(50,100,120,.2));
+}
+@keyframes sink {
+  0%   { transform:translateX(-50%) translateY(0) rotate(-3deg); opacity:1; }
+  30%  { transform:translateX(20px) translateY(-20px) rotate(4deg); opacity:1; }
+  60%  { transform:translateX(-10px) translateY(10px) rotate(-2deg); opacity:1; }
+  85%  { transform:translateX(5px) translateY(40px) rotate(3deg); opacity:.6; }
+  100% { transform:translateX(0) translateY(80px) rotate(0deg); opacity:0; }
+}
+
+/* 完了テキスト */
+.done-title {
+  font-family:'Shippori Mincho', serif;
+  font-size:clamp(20px,4vw,26px); font-weight:600;
+  color:var(--text); line-height:1.8; letter-spacing:1px;
+  margin-bottom:16px;
+  opacity:0; animation:fadein 1s ease 2.8s forwards;
+}
+.done-sub {
+  font-size:13px; color:var(--text-mid);
+  line-height:2.3; letter-spacing:.5px;
+  margin-bottom:44px;
+  opacity:0; animation:fadein 1s ease 3.1s forwards;
+}
+@keyframes fadein { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+
+.done-actions {
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  opacity:0; animation:fadein 1s ease 3.4s forwards;
+}
+.btn-island {
+  background:var(--text); color:#f5f0e2;
+  border:none; padding:13px 44px;
+  font-family:'Shippori Mincho', serif;
+  font-size:13px; letter-spacing:3px;
+  cursor:pointer; border-radius:2px; transition:all .3s;
+}
+.btn-island:hover { background:var(--green); transform:translateY(-2px); box-shadow:0 8px 24px rgba(106,170,122,.3); }
+.done-guest-link {
+  font-family:'Shippori Mincho', serif;
+  font-size:11px; letter-spacing:2px; color:var(--text-light);
+  background:none; border:none; cursor:pointer;
+  border-bottom:1px solid rgba(122,146,128,.3); padding-bottom:2px;
+  transition:all .25s;
+}
+.done-guest-link:hover { color:var(--text-mid); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">rambly</a>
+  <div class="nav-right">
+    <a href="about.html" class="nav-link">サービスについて</a>
+    <button class="nav-cta">島を作る</button>
+  </div>
+</nav>
+
+<!-- ════ STEP 1: 注意書き ════ -->
+<div id="step-notice">
+
+  <div class="notice-bottle">
+    <svg width="64" height="108" viewBox="0 0 72 122" fill="none">
+      <rect x="27" y="3" width="18" height="13" rx="3" fill="#c4955a"/>
+      <rect x="24" y="14" width="24" height="5" rx="2" fill="#b8824a"/>
+      <path d="M28 19 Q24 27 22 36 L50 36 Q48 27 44 19 Z" fill="#7abf8a" opacity=".88"/>
+      <path d="M18 36 Q14 50 14 68 Q14 104 20 112 Q26 118 36 118 Q46 118 52 112 Q58 104 58 68 Q58 50 54 36 Z" fill="#7abf8a" opacity=".88"/>
+      <path d="M22 44 Q20 60 20 76" stroke="rgba(255,255,255,.38)" stroke-width="3" stroke-linecap="round"/>
+      <rect x="24" y="62" width="24" height="18" rx="2" fill="rgba(255,255,210,.3)" transform="rotate(-3 36 71)"/>
+      <line x1="28" y1="68" x2="44" y2="66.5" stroke="rgba(255,255,200,.45)" stroke-width="1"/>
+      <line x1="28" y1="72" x2="44" y2="70.5" stroke="rgba(255,255,200,.45)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <span class="notice-eyebrow">GUEST</span>
+  <h1 class="notice-title">ゲストとして流すまえに</h1>
+
+  <div class="notice-cards">
+
+    <div class="notice-card">
+      <div class="notice-card-icon">🍾</div>
+      <div class="notice-card-text">
+        ゲストのボトルメールは、<strong>登録ユーザーの砂浜に届きます</strong>。
+        あなた自身は受け取る砂浜を持っていないので、誰かから返事が来ても受け取れません。
+      </div>
+    </div>
+
+    <div class="notice-card">
+      <div class="notice-card-icon">✉️</div>
+      <div class="notice-card-text">
+        エアメール（返信）を受け取るには、<strong>島を作る（登録する）必要があります</strong>。
+        登録は無料です。
+      </div>
+    </div>
+
+    <div class="notice-card highlight">
+      <div class="notice-card-icon">🏝️</div>
+      <div class="notice-card-text">
+        <strong>島を作ると</strong>、自分の砂浜が生まれ、ボトルが届くようになります。
+        流すだけでなく、受け取ることもできます。
+      </div>
+    </div>
+
+  </div>
+
+  <button class="btn-proceed" onclick="goWrite()">
+    このまま流す
+  </button>
+  <p class="notice-login">
+    登録はこちら → <a href="#">島を作る</a>
+  </p>
+
+</div>
+
+<!-- ════ STEP 2: 書く ════ -->
+<div id="step-write">
+  <div class="write-container">
+
+    <span class="write-eyebrow">WRITE</span>
+    <h2 class="write-title">ボトルメールを書く</h2>
+
+    <!-- ボトルセレクター -->
+    <div class="bottle-selector">
+      <div class="bottle-tap-hint">ボトルをタップして種類を選ぶ</div>
+      <div class="bottle-choices">
+        <div class="bottle-choice active" id="cg" onclick="swB('green')">
+          <svg width="46" height="78" viewBox="0 0 54 92" fill="none">
+            <rect x="20" y="2" width="14" height="10" rx="2.5" fill="#c4955a"/>
+            <rect x="18" y="11" width="18" height="4" rx="2" fill="#b8824a"/>
+            <path d="M20 15 Q17 21 16 27 L38 27 Q37 21 34 15 Z" fill="#7abf8a" opacity=".92"/>
+            <path d="M12 27 Q10 36 10 47 Q10 70 15 76 Q19 80 27 80 Q35 80 39 76 Q44 70 44 47 Q44 36 42 27 Z" fill="#7abf8a" opacity=".92"/>
+            <path d="M15 32 Q14 42 14 54" stroke="rgba(255,255,255,.42)" stroke-width="2.5" stroke-linecap="round"/>
+            <rect x="18" y="44" width="18" height="14" rx="1.5" fill="rgba(255,255,210,.38)" transform="rotate(-3 27 51)"/>
+          </svg>
+          <div class="bc-label">クリアボトル</div>
+          <div class="bc-desc">相手が気に入ったら<br>市場に公開されるかも</div>
+        </div>
+        <div class="bottle-choice" id="cb" onclick="swB('brown')">
+          <svg width="46" height="78" viewBox="0 0 54 92" fill="none">
+            <rect x="20" y="2" width="14" height="10" rx="2.5" fill="#8a6040"/>
+            <rect x="18" y="11" width="18" height="4" rx="2" fill="#7a5030"/>
+            <path d="M20 15 Q17 21 16 27 L38 27 Q37 21 34 15 Z" fill="#7a5230" opacity=".93"/>
+            <path d="M12 27 Q10 36 10 47 Q10 70 15 76 Q19 80 27 80 Q35 80 39 76 Q44 70 44 47 Q44 36 42 27 Z" fill="#7a5230" opacity=".93"/>
+            <path d="M15 32 Q14 42 14 54" stroke="rgba(255,220,180,.15)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div class="bc-label">ブラウンボトル</div>
+          <div class="bc-desc">誰も公開できない<br>秘密の手紙</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 羊皮紙 -->
+    <div class="parchment">
+      <div class="parchment-lines"></div>
+      <div class="parchment-date" id="pdate"></div>
+      <textarea class="parchment-textarea" id="wa" maxlength="108"
+        placeholder="誰かに届いてほしい言葉を、ここに。&#10;宛先も、名前も、なくていい。"></textarea>
+      <div class="parchment-char-row">
+        <span class="parchment-char" id="wc">0 / 108</span>
+      </div>
+    </div>
+
+    <!-- 送信 -->
+    <div class="send-action">
+      <button class="btn-send" id="sendbtn" onclick="doSend()">
+        封をして、流す 🍾
+      </button>
+      <p class="send-note">
+        ゲストのボトルメールは、エアメールを受け取れません。<br>
+        <a href="#" style="color:var(--text-light);text-decoration:none;border-bottom:1px solid rgba(122,146,128,.3)">島を作る</a>と受け取れるようになります。
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════ STEP 3: 完了 ════ -->
+<div id="step-done" style="display:none;flex-direction:column">
+
+  <div class="sea-stage">
+    <!-- 波 -->
+    <div class="sea-wave">
+      <svg viewBox="0 0 800 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C100,10 200,50 300,30 C400,10 500,50 600,30 C700,10 800,50 800,30 L800,60 L0,60 Z" fill="var(--sky-deep)" opacity=".6"/>
+        <path d="M0,40 C80,20 180,55 280,35 C380,15 480,55 580,35 C680,15 750,50 800,38 L800,60 L0,60 Z" fill="var(--sky-deep)" opacity=".8"/>
+      </svg>
+    </div>
+    <!-- ボトル -->
+    <div class="done-bottle">
+      <svg width="52" height="88" viewBox="0 0 72 122" fill="none" id="done-bottle-svg">
+        <rect x="27" y="3" width="18" height="13" rx="3" fill="#c4955a"/>
+        <rect x="24" y="14" width="24" height="5" rx="2" fill="#b8824a"/>
+        <path d="M28 19 Q24 27 22 36 L50 36 Q48 27 44 19 Z" fill="#7abf8a" opacity=".88"/>
+        <path d="M18 36 Q14 50 14 68 Q14 104 20 112 Q26 118 36 118 Q46 118 52 112 Q58 104 58 68 Q58 50 54 36 Z" fill="#7abf8a" opacity=".88"/>
+        <path d="M22 44 Q20 60 20 76" stroke="rgba(255,255,255,.38)" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <h2 class="done-title">流れていきました。</h2>
+  <p class="done-sub">
+    あなたの言葉は、今、ramblyの海を漂っています。<br>
+    誰かの砂浜に届くことを、願っています。<br>
+    <br>
+    返事を受け取りたいなら、島を作ってみませんか。
+  </p>
+
+  <div class="done-actions">
+    <button class="btn-island" onclick="location.href='index.html#island'">
+      島を作る
+    </button>
+    <button class="done-guest-link" onclick="again()">
+      もう一通、流す
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ── indexから引き継いだテキストを展開 ──
+const params = new URLSearchParams(location.search);
+const preText   = params.get('text')   || '';
+const preBottle = params.get('bottle') || 'green';
+
+// ── 日付 ──
+const d = new Date();
+const dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+
+// ── STEP 1→2 ──
+function goWrite() {
+  document.getElementById('step-notice').style.display = 'none';
+  const sw = document.getElementById('step-write');
+  sw.style.display = 'block';
+  sw.style.animation = 'none';
+
+  // 日付セット
+  document.getElementById('pdate').textContent = dateStr;
+
+  // indexから引き継いだ内容をセット
+  const wa = document.getElementById('wa');
+  wa.value = preText;
+  document.getElementById('wc').textContent = `${wa.value.length} / 108`;
+
+  // ボトル種別を引き継ぐ
+  if (preBottle === 'brown') swB('brown');
+
+  window.scrollTo(0, 0);
+}
+
+// ── 文字数 ──
+document.getElementById('wa').addEventListener('input', () => {
+  const wa = document.getElementById('wa');
+  document.getElementById('wc').textContent = `${wa.value.length} / 108`;
+});
+
+// ── ボトル切替 ──
+let currentBottle = preBottle;
+function swB(t) {
+  currentBottle = t;
+  const cg = document.getElementById('cg');
+  const cb = document.getElementById('cb');
+  const btn = document.getElementById('sendbtn');
+  if (t === 'green') {
+    cg.classList.add('active'); cb.classList.remove('active');
+    btn.className = 'btn-send';
+    btn.textContent = '封をして、流す 🍾';
+    // ボトルSVGをクリアに
+    document.getElementById('done-bottle-svg').querySelector('path:nth-child(3)').setAttribute('fill','#7abf8a');
+    document.getElementById('done-bottle-svg').querySelector('path:nth-child(4)').setAttribute('fill','#7abf8a');
+  } else {
+    cb.classList.add('active'); cg.classList.remove('active');
+    btn.className = 'btn-send brown-mode';
+    btn.textContent = '封をして、流す 🟤';
+    document.getElementById('done-bottle-svg').querySelector('path:nth-child(3)').setAttribute('fill','#7a5230');
+    document.getElementById('done-bottle-svg').querySelector('path:nth-child(4)').setAttribute('fill','#7a5230');
+  }
+}
+
+// ── 送信 ──
+function doSend() {
+  const wa = document.getElementById('wa');
+  if (!wa.value.trim()) {
+    wa.focus();
+    wa.style.borderBottom = '2px solid rgba(160,130,70,.5)';
+    setTimeout(() => { wa.style.borderBottom = ''; }, 1000);
+    return;
+  }
+
+  // 書く画面を非表示
+  document.getElementById('step-write').style.display = 'none';
+
+  // 完了画面を表示
+  const done = document.getElementById('step-done');
+  done.style.display = 'flex';
+
+  // ブラウンボトルなら完了画面のボトル色も変更
+  if (currentBottle === 'brown') {
+    const paths = done.querySelectorAll('.done-bottle path');
+    paths.forEach((p, i) => {
+      if (i === 2 || i === 3) p.setAttribute('fill', '#7a5230');
+      if (i === 0) p.setAttribute('fill', '#8a6040');
+      if (i === 1) p.setAttribute('fill', '#7a5030');
+    });
+  }
+
+  window.scrollTo(0, 0);
+}
+
+// ── もう一通 ──
+function again() {
+  document.getElementById('step-done').style.display = 'none';
+  const sw = document.getElementById('step-write');
+  sw.style.display = 'block';
+  document.getElementById('wa').value = '';
+  document.getElementById('wc').textContent = '0 / 108';
+  window.scrollTo(0, 0);
+}
+
+// ── indexからテキストがある場合は注意画面をスキップ ──
+// （URLパラメーターでauto=trueなら即書く画面へ）
+if (params.get('auto') === 'true') {
+  goWrite();
+}
+</script>
+</body>
+</html>
